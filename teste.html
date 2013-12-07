@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <script src="./public/js/jquery-1.7.2.min.js"></script>
+        <script src="./public/js/jquery.dataTables.js"></script>
+        <script src="./public/js/uploaddnd.js"></script>
+        <link href="./public/css/bootstrap.min.css" rel="stylesheet"></link> 
+        <link href="./public/css/adminia.css" rel="stylesheet"></link> 
+        <link href="./public/css/upload.css" rel="stylesheet"></link> 
+    </head>
+    <body>
+
+        <div id="dropArea" class="row-fluid well">
+            <p style="font-size:18px;color:darkgray;margin-top: 20px;">Arraste aqui os arquivos que deseja anexar ao projeto.</p>
+        </div>
+        <canvas id="prog" width="500" height="20"></canvas>
+        <div class="row-fluid" style=" margin: 20px;width: 55.5%;">
+            <table cellpadding="0" cellspacing="0" border="0"  class="table table-striped table-condensed" id="listafiles" style="width: 100%">
+                <thead>
+                    <tr>
+                        <th>Arquivos</th>
+                        <th style="width: 10px;"></th>
+                        <td align="center" style="width: 30px;" ></td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td colspan="4" class="dataTables_empty" align="center">Carregando...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div id="result" style="display: none"></div>
+        <script>
+            $(document).ready(function(){
+                try{
+                    $("#dropArea").fileupload({
+                        url:'http://localhost/lincsgp/index/upload',
+                        output:'result',
+                        list:'listafiles',
+                        loadurl:'http://localhost/lincsgp/index/uploadfiles',
+                        deleteurl:'http://localhost/lincsgp/index/deletefiles'
+                    });
+                }catch(e){
+                    console.log('-> '+e);
+                }
+            });
+            
+            function delfiles(row){
+                try{
+                    var d = "row="+row;
+                    $.ajax({
+                        type:'POST',
+                        data:d,
+                        url:'http://localhost/lincsgp/index/deletefiles',
+                        success: function(){
+                            $("#listafiles").dataTable().fnDraw();
+                        }
+                    });
+                }catch(e){
+                    console.log(e);
+                }
+            }
+        </script>
+    </body>
+</html>

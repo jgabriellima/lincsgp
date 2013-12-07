@@ -1,0 +1,113 @@
+
+<link href="./public/css/pages/faq.css" rel="stylesheet"> 
+<h1 class="page-title">
+    <i class="icon-pushpin"></i>
+    Perguntas Frequentes					
+</h1>
+
+<div class="widget" style="display: none">
+    <div class="widget-content">
+        <h3 >Buscar...</h3>
+        <ol class="faq-list">
+            {{#faqs}}
+            <li>
+                <h4>{{pergunta}}</h4>
+                <p>{{resposta}}</p>
+                <br/><br/>
+                <a href="#top">Voltar ao Topo</a>
+            </li>
+            <hr/>
+            {{/faqs}}
+        </ol>
+
+    </div> <!-- /widget-content -->
+</div> <!-- /widget -->
+
+<div id="faqdialog" class="modal hide fade " style="width: 30%">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h3>Inserir Nova Pergunta Frequente</h3>
+    </div>
+    <form id="faqform" action="./" onsubmit="inserirfaq(event)">
+        <div class="modal-body" >
+            <div id="errofaq" class="alert alert-danger" style="display: none;">
+                <a class="close" onclick="$('#errofaq').hide();">×</a>
+                <span></span>
+            </div>
+            <div  class="row-fluid">
+                <div class="span12">
+                    Pergunta:
+                    <input id="pergunta" required="true" style="width: 98%"/>
+                </div>
+            </div>
+            <div class="row-fluid">
+                <div class="span12">
+                    Resposta:
+                    <textarea id="resposta" required="true" style="width: 98%" rows="5"></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer" >
+            <button type="submit" class="btn btn-primary">Inserir</button>
+            <a href="#" class="btn" data-dismiss="modal">Cancelar</a>
+        </div>
+    </form>   
+</div>
+
+<!-- Le javascript
+    ================================================== -->
+<!--    <script>window.jQuery || document.write('<script src="./public/js/jquery-1.7.2.min.js"><\/script>');</script>-->
+<!--    <script src="./public/js/jquery-1.7.2.min.js"></script>-->
+<!--    <script src="./public/js/bootstrap.js"></script>-->
+<script src="./public/js/bootstrap/bootstrap-modal.js"></script>
+<script src="./public/js/faq.js"></script>
+
+<script>
+    var faqlisttemplate = null;
+    var widgetcontent = null;
+    
+    $.getJSON('./index/faqjson',
+    function(json){
+        /*if(json['faqs']==""){
+                    alert('vazio');
+                }*/
+        try{
+            if(faqlisttemplate == null){
+                faqlisttemplate = $('.faq-list').html();
+                widgetcontent = $('.widget-content').html();
+            }
+            var html = Mustache.to_html(faqlisttemplate, json);
+            $('.faq-list').html(html);
+            $(".widget").show();
+        }catch(e){
+            console.log(e);
+        }
+        $('.faq-list').goFaq ();
+    });    
+    
+    function inserirfaq(evento){
+        try{
+            var dataString = "pergunta="+$("#pergunta").val()+"&resposta="+$("#resposta").val();
+            $.ajax({
+                type:'POST',
+                data:dataString,
+                url:'./index/inserirfaq',
+                dataType:'json',
+                success: function(json){
+                    if(faqlisttemplate == null){
+                        faqlisttemplate = $('.faq-list').html();
+                    }
+                    var html = Mustache.to_html(faqlisttemplate, json);
+                    $('.widget-content').html(widgetcontent);
+
+                    $('.faq-list').html(html);
+                    $('.faq-list').goFaq ();
+                }
+            });
+        }catch(e){
+
+        }
+        evento.preventDefault();
+    }
+
+</script>

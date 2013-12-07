@@ -1,0 +1,29 @@
+.guidely-number {
+    background: url(guidely-number.png) no-repeat 0 0;
+    width: 45px;
+    height: 45px;	
+    display: none;	
+/*    position: absolute;*/
+    cursor: pointer;	
+    z-index: 10002;
+}
+.guidely-number h3{
+    cursor: pointer;	
+    z-index: 10002;
+}
+.guiadisable{
+    color: lightgray;
+}
+
+.guidely-number span {
+    width: 43px;
+    height: 43px;
+    font-family: arial, sans-serif;
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+    color: #FFF;
+    text-align: center;
+    display: block;
+    line-height: 44px;
+}

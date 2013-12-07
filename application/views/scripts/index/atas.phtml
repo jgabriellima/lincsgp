@@ -1,0 +1,437 @@
+<link rel="stylesheet" href="./public/css/chosen.css"/>
+<style>
+
+</style>
+<h1 class="page-title">
+    <i class="icon-home"></i>
+    Atas das Reuniões
+</h1>
+<div id="btnstop">
+    <div class="btn-group" data-toggle="buttons-radio" style="float: right">
+        <button id="listabtnview" class="btn active view" view="lista" onclick="Ata.goview($(this))">Listar Todos</button>
+        <button id="formbtnview" class="btn view" view="form" onclick="Ata.goview($(this))">Nova Ata</button>
+    </div>
+</div>
+
+<div id="lista" style="margin-top: -10px;">
+    <h2>Todos as Atas</h2>
+    <hr/>
+    <div class="row-fluid">
+        <div class="span12">
+            <!-- ** widget ** -->
+            <div class="row-fluid" align="right">
+                Buscar: <input  style="margin-right: 15px" onkeyup="Ata.search($(this))"/>
+            </div>
+            <span id="carregando">Carregando...</span>
+            <div id="listatas"  class="well" style="display: none">
+                
+                {{#atas}}
+                <div class="message-feed bottom-margin">
+                    <div class="float-left">
+                        <img class="avatar" src="https://graph.facebook.com/{{username}}/picture">
+                    </div>
+                    <div class="msg-post-right">
+                        <div class="message-wrapper right custom-widget-msg">
+                            <div class="arrow"></div>
+                            <div class="inner">
+                                <div class="content">
+                                    <a class="btn btn-small btn-success pull-right" ata="{{idata}}" onclick="Ata.viewata($(this))">Acessar</a>
+                                    <p><a href="#">{{nome}}</a> publicou uma nova ata no dia {{datacriacao}}</p>
+                                    <hr class="white">
+                                    <p>{{assunto}}</p>
+                                </div>
+                            </div>
+                            <div class="arrow"></div>
+                        </div>
+                    </div>
+                </div>
+                {{/atas}}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="form" style="margin-top: -10px;display: none">
+    <h2>Atas</h2>
+    <hr/>
+    <div id="msgerro" class="alert alert-danger" style="display: none">
+        <span></span>
+    </div>
+    <form id="formatas" action="./" onsubmit="Ata.insertata(event);">
+        <div class="row-fluid">
+            <div class="span12">
+                Participantes (Membros):
+                <br/>
+                <div id="fieldmembros" style="width: 600px;float: left">
+
+                </div>
+                <span id="datacriacao" style="font-size: 16px; margin-top: -1px;" class="pull-right">{{datacriacao}}</span>
+            </div>
+        </div>
+        <div class="row-fluid">
+            <div class="span6">
+                Participantes (Externos):
+                <br/>
+                <input id="membrosexternos" value="{{membrosexternos}}" style="width:100%;" />
+            </div>
+            <div class="span1">
+                Duração:
+                <br/>
+                <input id="duracao" value="{{duracao}}" style="width:100%;" />
+            </div>
+            <div class="span3">
+                &nbsp;
+                <br/>
+                <a class="btn _btns" title="Iniciar"><i class="icon-play-circle"></i></a>
+            </div>
+        </div>
+        <div class="row-fluid">
+            <div class="span7">
+                Assunto:
+                <input id="assunto" required="true" style="width: 100%" placeholder="Assunto ou tema da reunião" value="{{assunto}}"/>
+
+            </div>
+            <div class="span5">
+                Palavras-Chave:
+                <input id="palavraschaves" required="true" style="width: 100%" placeholder="Digite aqui as palavras-chave separadas por vírgula" value="{{palavraschaves}}"/>
+
+            </div>
+        </div>
+        <div class="row-fluid">
+            <div class="span12">
+                Pauta:
+                <textarea id="pauta" required="true" style="width: 100%" rows="4">{{pauta}}</textarea>
+
+            </div>
+        </div>
+        <div class="row-fluid">
+            <div class="span12">
+                Ata:
+                <textarea id="conteudo" required="true" style="width: 100%" rows="4">{{conteudo}}</textarea>
+
+            </div>
+        </div>
+        <div class="row-fluid">
+            <div class="span12">
+                Observação:
+                <textarea id="observacao" style="width: 100%" rows="4">{{observacao}}</textarea>
+
+            </div>
+        </div>
+        <hr/>
+        <div class="row-fluid _btns" align="right">
+            <button type="submit" class="btn btn-primary">Salvar</button>
+            <button type="reset" class="btn btn-danger" onclick="Ata.viewlist()">Cancelar</button>
+        </div>
+    </form>
+</div>
+
+
+<!--<script>window.jQuery || document.write('<script src="./public/js/jquery-1.7.2.min.js"><\/script>');</script>
+<script src="./public/js/maskvalidator.js"></script>
+<script src="./public/js/chosen.jquery.js"></script>
+<script src="./public/js/selecteditor.js"></script>-->
+<!--<script src="./public/js/bootstrap.js"></script>-->
+<!--<script src="./public/js/bootstrap/bootstrap-button.js"></script>-->
+<!--<script src="./public/js/bootstrap/bootstrap-tab.js"></script>-->
+<script>
+    var Ata = {
+        $edit:false,
+        $ata:{},
+        $ataslisttemplate:null,
+        $atasformtemplate:null,
+        $widgetcontent:null,
+        $atas:null,
+        $fieldmembros:$("#fieldmembros"),
+        $url:null,
+        
+        init:function(){
+            Ata.loadatas();
+        },
+        loadusuarios:function(selecionados){
+            try{
+                $("#fieldmembros").html('');
+                $.getJSON('./index/idusuariosjson',
+                function(json){
+                    var select = ' <select id="users" disabled="true" required="true" class="chosen" multiple="true" style="width:600px;">';
+                    $.each(json, function(key, value){
+                        if(Ata.contains(value['nome'],selecionados,'nome')){
+                            select+='<option value="'+value['idusuarios']+'" selected >'+value['nome']+'</option>';
+                        }else{
+                            select+='<option value="'+value['idusuarios']+'">'+value['nome']+'</option>';
+                        }
+                    });
+                    select+="</select>"
+                    console.log(select);
+                    $("#fieldmembros").html(select);
+                    $(".chosen").data("placeholder","Selecione os participantes...").chosen();
+                });    
+            }catch(e){
+                console.log('loadusuarios: '+e);
+            }
+        },
+        
+        contains:function(_value,collection,_key){
+            var r = false;
+            try{
+                $.each(collection, function(key, value){
+                    console.log(value)
+                    if(_value == value[_key]){
+                        r = true;
+                    }
+                });
+            }catch(e){
+                console.log('contains: '+e);
+            }
+            return r;
+        },
+        loadatas:function(search){
+            try{
+                if(search==undefined){
+                    Ata.$url='./index/atasjson';
+                }else{
+                    Ata.$url='./index/buscaratas?search='+search;
+                }
+                $.getJSON(Ata.$url,
+                function(json){
+                    if(json['atas']==""){
+                        $("#listatas").html('<div id="msgvazio" class="alert alert-info" style="display: none"><p>Nenhuma ata de reunião cadastrada.</p></div>');
+                        $("#msgvazio").show();
+                    }else{
+                        try{
+                            Ata.$atas = json;
+                            if(Ata.$ataslisttemplate == null){
+                                Ata.$ataslisttemplate = $('#listatas').html();
+                                Ata.$ataslisttemplate = Ata.$ataslisttemplate.replace('%7B%7B',"{{");
+                                Ata.$ataslisttemplate = Ata.$ataslisttemplate.replace('%7D%7D',"}}");
+                            }
+                            var html = Mustache.to_html(Ata.$ataslisttemplate, json);
+                            $('#listatas').html(html);
+                            $('#listatas').show();
+                            $('#carregando').hide();
+                        }catch(e){
+                            console.log(e);
+                        }
+                    }
+                });    
+            }catch(e){
+                console.log('loadatas: '+e);
+            }
+        },
+        viewlist:function(){
+            try{
+                $('#carregando').show();
+                Ata.loadatas();
+                $('.view').each(function(){
+                    $(this).removeClass('active');
+                });
+                $('#listabtnview').addClass('active');
+                Ata.activeview('form','lista');
+                $('#carregando').hide();
+            }catch(e){
+                console.log('viewlist: '+e)
+            }
+        },
+        viewata:function (btn){
+            try{
+                Ata.$ata;
+                $.each(Ata.$atas['atas'],function(key,value){
+                    if(btn.attr("ata")==value.idata){
+                        Ata.$ata = value;
+                    }
+                });
+                console.log(Ata.$ata);
+                if(Ata.$atasformtemplate == null){
+                    Ata.$atasformtemplate = $('#form').html();
+                }
+                var html = Mustache.to_html(Ata.$atasformtemplate, Ata.$ata);
+                $('#form').html(html);
+                //
+                $('.view').each(function(){
+                    $(this).removeClass("active");
+                });
+                $('#formbtnview').addClass("active");
+            
+                Ata.$edit=false;
+                if(Layout.$user.idusuarios == Ata.$ata.idusuarios){
+                    console.log(Layout.$user.idusuarios+" = "+Ata.$ata.idusuarios);
+                    Ata.setdisable('formatas',0);
+                    Ata.$edit = true;
+                }else{
+                    Ata.setdisable('formatas',1);
+                }
+            
+                $.getJSON('./index/getuserbyatas?idatas='+Ata.$ata.idata, function(selecionados){
+                    if(Ata.$edit){
+                        Ata.loadusuarios(selecionados);
+                        $("._btns").show();
+                    }else{
+                        $("._btns").hide();
+                        var _users = "";
+                        $.each(selecionados, function(key, value){
+                            _users += value['nome']+" | ";  
+                        });
+                        var input = " <input id=\"users\" disabled=\"true\" style=\"width:600px;\">";
+                        $("#fieldmembros").html(input);
+                        $("input#users").val(_users);
+                    }
+                    Ata.activeview('lista','form');
+                });
+            
+            }catch(e){
+                console.log('viewata: '+e);
+            }
+        
+        },
+        search:function(inp){
+            try{
+                Ata.loadatas(inp.val());
+            }catch(e){
+                console.log('search: '+e);
+            }
+            //        buscaratas
+        },
+    
+        insertata:function(ev){
+            $("#msgerro").hide();
+            try{
+                var u = {};
+                $.each($("select#users").val(),function(key,value){
+                    u['_u'+key]= value;
+                });
+                u['pauta'] = $("#formatas #pauta").val();
+                u['conteudo'] = $("#formatas #conteudo").val();
+                u['observacao'] = $("#formatas #observacao").val();
+                u['assunto'] = $("#formatas #assunto").val();
+                u['membrosexternos'] = $("#formatas #membrosexternos").val();
+                u['palavraschaves'] = $("#formatas #palavraschaves").val();
+                u['datacriacao'] = $("#formatas #datacriacao").attr('timestamp');
+                console.log(u);
+           
+                var url;
+                if(!Ata.$edit){
+                    url = './index/inseriratas'
+                }else{
+                    url = './index/atualizaratas'
+                    u['idata'] = Ata.$ata.idata;
+                }
+                $.ajax({
+                    type:'POST',
+                    url:url,
+                    data:u,
+                    dataType: "json",
+                    success:function(retorno){
+                        if(retorno['status']=="sucesso"){
+                            Ata.viewlist();
+                        }else{
+                            $("#msgerro > span").html(retorno['erro']);
+                            $("#msgerro").show();
+                        }
+                    }
+                });
+           
+            }catch(e){
+                console.log('insertata: '+e);
+            }
+        
+            ev.preventDefault();
+        },
+        goview:function(btn){
+            try{
+                $('.view').each(function(){
+                    $("#"+$(this).attr('view')).hide();
+                });
+                if(btn.attr('view')=='form'){
+                    Ata.$edit = false;
+                    Ata.loadusuarios();
+                    $("span#datacriacao").html(Ata.displayTime());
+                }
+                if(!Ata.$edit){
+                    clearForm('formatas');
+                    Ata.setdisable('formatas',0);
+                }
+                $("#"+btn.attr('view')).show();
+            }catch(e){
+                console.log('goview: '+e);
+            }
+        },
+    
+        displayTime:function() {
+            try{
+                var str = "";
+
+                var currentTime = new Date()
+                var ano = currentTime.getUTCFullYear();
+                var mes = (currentTime.getUTCMonth()+1);
+                var dia = currentTime.getUTCDate();
+                var hours = currentTime.getHours()
+                var minutes = currentTime.getMinutes()
+                var seconds = currentTime.getSeconds()
+
+                if (minutes < 10) {
+                    minutes = "0" + minutes
+                }
+                if (seconds < 10) {
+                    seconds = "0" + seconds
+                }
+                str=dia+"/"+mes+"/"+ano+" ";
+                str +=hours + ":" + minutes + ":" + seconds + " ";
+        
+                var mysqlDateTime = ano + '-' + mes + '-' + dia + ' ' + hours + ':' + minutes + ':' + seconds;
+                $("span#datacriacao").attr('timestamp',mysqlDateTime);
+                if(hours > 11){
+                    str += "PM"
+                } else {
+                    str += "AM"
+                }
+                return str;
+            }catch(e){
+                console.log('displayTime: '+e)
+            }
+        },
+        activeview:function (current,_new){
+            try{
+                $("#"+current).hide(0,function(){
+                    $("#"+_new).show(0,function(){
+                    });
+                });
+            }catch(e){
+                console.log('activeview: '+e);
+            }
+        },
+    
+        setdisable:function(_form,status){
+            try{
+                var form = "#"+_form;
+        
+                var fieldsetCount = $(form).children().length;
+                for(var i = 1; i <= fieldsetCount; ++i){
+                    $(form).children(':nth-child('+ parseInt(i) +')').find(':input:not(button)').each(function(){
+                        try{
+                            if(status){
+                                $(this).attr('disabled',true);
+                                $(".search-field > input").attr('disabled',true);
+                            }else{
+                                $(this).attr('disabled',false);
+                                $(".search-field > input").attr('disabled',true);
+                            }
+                        }catch(e){
+                            console.log(e);
+                        }
+                    });
+                }
+            }catch(e){
+                console.log('setdisable: '+e);
+            }
+        }
+    };
+    
+    $(document).ready(function(){
+//        Layout.load("./public/css/chosen.css", "chosen.css", "css", true, true);
+        Layout.load("./public/js/chosen.jquery.js", "chosen.jquery.js", "script", false, true);
+        Layout.load("./public/js/maskvalidator.js", "maskvalidator.js", "script", true, true);
+        Layout.load("./public/js/selecteditor.js", "selecteditor.js", "script", true, true);
+        Ata.init();
+    });
+    
+</script>

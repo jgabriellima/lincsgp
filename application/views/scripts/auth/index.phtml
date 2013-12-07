@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="pt">
+    <head>
+        <meta charset="utf-8">
+        <title>LINC :: SGP - Sistema de Gerenciamento de Projetos :: </title>
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+        <meta name="apple-mobile-web-app-capable" content="yes">    
+        <link href="./public/css/bootstrap.min.css" rel="stylesheet">
+        <link href="./public/css/bootstrap-responsive.min.css" rel="stylesheet">
+        <link href="http://fonts.googleapis.com/css?family=Open+Sans:400italic,600italic,400,600" rel="stylesheet">
+        <link href="./public/css/font-awesome.css" rel="stylesheet">
+        <link href="./public/css/adminia.css" rel="stylesheet"> 
+        <link href="./public/css/adminia-responsive.css" rel="stylesheet"> 
+        <link href="./public/css/pages/login.css" rel="stylesheet"> 
+        <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+        <!--[if lt IE 9]>
+          <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+        <link rel="shortcut icon" type="image/x-icon" href="./public/img/favicon.ico">
+        <script src="http://connect.facebook.net/en_US/all.js"></script>
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-fixed-top">
+
+            <div class="navbar-inner">
+
+                <div class="container">
+
+                    <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"> 
+                        <span class="icon-bar"></span> 
+                        <span class="icon-bar"></span> 
+                        <span class="icon-bar"></span> 				
+                    </a>
+                    <a class="brand" href="http://linc.ufpa.br" target="_blank">:: LINC ::SGP - Sistema de Gerenciamento de Projetos </a>
+                    <div class="nav-collapse">
+                        <ul class="nav pull-right">
+                            <li class="">
+                                <a href="javascript:;"><i class="icon-chevron-left"></i> LINC </a>
+                            </li>
+                        </ul>
+                    </div> <!-- /nav-collapse -->
+                </div> <!-- /container -->
+            </div> <!-- /navbar-inner -->
+        </div> <!-- /navbar -->
+        <div id="login-container">
+            <div id="login-header">
+                <h3>Entrar</h3>
+            </div> <!-- /login-header -->
+            <div id="login-content" class="clearfix">
+
+                <form id="login" action="./">
+                    <fieldset>
+                        <div>
+                            <div id="erro" class="alert alert-danger" style="display: none;">
+                                <a class="close" onclick="$('#erroloading').hide();">×</a>
+                                <span></span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label" for="username">Usuário (E-mail)</label>
+                            <div class="controls">
+                                <input  type="email" required="true" class="login username-field" id="username" style="padding-left:50px;width: 85%;font-size: 16px;" >
+                            </div>
+                        </div>
+                        <div class="control-group field">
+                            <label class="control-label" for="password">Senha</label>
+                            <div class="controls">
+                                <input type="password" required="true" class="login password-field" id="password" style="padding-left:50px;width: 85%;font-size: 16px;">
+                            </div>
+                        </div>
+                    </fieldset>
+                    <!--                    <div id="remember-me" class="pull-left">
+                                            <input type="checkbox" name="remember" id="remember" />
+                                            <label id="remember-label" for="remember">Mantenha-me Conectado</label>
+                                        </div>-->
+                    <div class="pull-left">
+                        <div id="caps" class="alert alert-danger" style="display: none">
+                            <span>O CAPS LOOK está ativado</span>
+                        </div>
+                        <button type="submit" class="btn btn-large">
+                            Entrar
+                        </button>
+                    </div>
+
+                    <div id="processando" class="alert alert-info" style="display: none">
+                        <span>Processando...</span>
+                    </div>
+                </form>
+
+                <div class=" login-social pull-right" style="margin-top: 10px;margin-left: 205px;">
+                    <p>Entrar usando sua rede social:</p>
+                    <!--                    <div class="twitter">
+                                            <a href="#" class="btn_1">Entrar com Twitter</a>				
+                                        </div>-->
+                    <div class="fb" style="float: right;">
+                        <!--                        <a href="#" class="btn_2" onclick="alert('Este recurso está temporariamente indisponível!')">Entrar com Facebook</a>				-->
+                        <a href="#" class="btn_2" onclick="statusFacebook();">Entrar com Facebook</a>				
+                    </div>
+                </div>
+
+            </div> <!-- /login-content -->
+
+            <div id="login-extra">
+
+                <p>Ainda não possui conta? <a href="javascript:;">Registre-se.</a></p>
+
+                <p>Esqueceu senha ? <a href="#">Recuperar Senha.</a></p>
+
+            </div> <!-- /login-extra -->
+
+        </div> <!-- /login-wrapper -->
+
+        <a href="http://linc.ufpa.br" target="_blank"><img src="./public/img/logo.png" width="100" style="position: absolute;bottom: 1px; margin: 0px;right: 1px;"/></a>
+        <!-- Le javascript
+        ================================================== -->
+        <!-- Placed at the end of the document so the pages load faster -->
+        <script src="./public/js/jquery-1.7.2.min.js"></script>
+        <script src="./public/js/bootstrap.js"></script>
+        <script>
+            $(document).ready(function() {
+                $('#password').keypress(function(e) {
+                    var s = String.fromCharCode( e.keyCode );
+                    if ( s.toUpperCase() === s && s.toLowerCase() !== s && !e.shiftKey ) {
+                        $("#caps").show('slide');
+                    }else{
+                        $("#caps").hide('slide');
+
+                    }
+                });
+            });
+            $('form#login').submit(function(e){
+                $('div#erro').hide('slide');
+                $('div#processando').show('slide');
+                $(':button').hide();
+                //
+                var username = $('input#username').val();
+                var password = $('input#password').val();
+                //
+                var dataString="username="+username+"&password="+password;
+                //
+                $.ajax({
+                    type:'POST',
+                    url:'./auth/login',
+                    data:dataString,
+                    dataType: "json",
+                    success:function(retorno){
+                        if(retorno['status'] == 'erro'){
+                            $('div#erro > span').html(retorno['result']);
+                            $('div#erro').show('slide');
+                        }else if(retorno['status']=='sucesso'){
+                            localStorage.setItem('refresh',false);
+                            window.location=retorno['url'];
+                        }
+                        $('div#processando').hide('slide');
+                        $(':button').show();
+                    }
+                });
+                e.preventDefault();
+            });
+            
+            var refresh = localStorage.getItem('refresh');
+            if(refresh==false){
+                localStorage.setItem('refresh',true);
+                window.location.reload(true);
+            }
+        </script>
+        <script>
+            FB.init({
+                //appId  : '493777447320175', //producao
+                appId  : '512649475431248',   //desenvolvimento
+                status: true, cookie: false, xfbml: false, oauth: true
+            });
+            function statusFacebook() {
+                FB.getLoginStatus(function(response) {
+                    if (response.status === 'connected') {
+                        
+                        FB.api('/me', function(response) {
+                            console.log(response);
+                            submitfacebook(response);
+                        });
+                        //                        window.location.replace("URL_TO_REDIRECT");
+                    } else {
+                        loginFacebook(); // nao autorizado, solicitar login
+                    }})
+            }
+            
+            function submitfacebook(obj){
+                $('div#erro').hide('slide');
+                $('div#processando').show('slide');
+                $(':button').hide();
+                
+                $.ajax({
+                    type:'POST',
+                    url:'./auth/loginfb',
+                    data:obj,
+                    dataType: "json",
+                    success:function(retorno){
+                        if(retorno['status'] == 'erro'){
+                            $('div#erro > span').html(retorno['result']);
+                            $('div#erro').show('slide');
+                            if(retorno['email'] == 1){
+                                
+                                var email = {
+                                    user:retorno['user'],
+                                    tipo:retorno['tipo']
+                                }   
+                                
+                                $.ajax({
+                                    type:'POST',
+                                    url:'./auth/sendmail',
+                                    data:email,
+                                    dataType: "json"
+                                });
+                            }
+                            
+                        }else if(retorno['status']=='sucesso'){
+                            localStorage.clear();
+                            localStorage.setItem('refresh',false);
+                            window.location=retorno['url'];
+                        }
+                        $('div#processando').hide('slide');
+                        $(':button').show();
+                    }
+                });
+                
+            }
+
+            function loginFacebook() {
+                FB.login(function(response) {
+                    if (response.authResponse) {
+                        window.location.replace("./");
+                    }
+                }, {scope: 'email,publish_stream,user_photos,friends_about_me' });
+            }
+
+        </script>
+    </body>
+</html>

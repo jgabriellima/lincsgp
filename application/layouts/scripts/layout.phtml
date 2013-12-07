@@ -1,0 +1,434 @@
+    <!DOCTYPE html>
+    <!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+    <!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+    <!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
+    <!--[if gt IE 8]><!--> <html class="no-js" lang="pt-br"> <!--<![endif]-->
+        <html class="no-js" lang="pt-br">
+            <head>
+                <title>LINC :: SGP - Sistema de Gerenciamento de Projetos :: </title>
+                <meta charset="utf-8">
+                <!--<META HTTP-EQUIV="Refresh" CONTENT="600;URL=./">-->
+                <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+                <meta name="description" content="Sistema de Gerenciamento de Projetos do Laborastório de Inteligência Computacional da Universidade Federal do Pará">
+                <meta name="author" content="Linc J. Gabriel Lima Fábrica de Software Lprad">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+                <meta name="apple-mobile-web-app-capable" content="yes">    
+                <!--le css-->
+                <link href="./public/css/layout.css" rel="stylesheet"> 
+                <link href="./public/css/pages/dashboard.css" rel="stylesheet"> 
+                <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+                <!--[if lt IE 9]>
+                <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+                <![endif]-->
+                <link rel="shortcut icon" type="image/x-icon" href="./public/img/favicon.ico">
+                <!--<link href="http://fonts.googleapis.com/css?family=Open+Sans:400italic,600italic,400,600" rel="stylesheet">-->
+                <link href="./public/css/font-awesome.css" rel="stylesheet">
+                <script src="./public/js/modernizr-2.5.3.min.js"></script>
+                <script src="./public/js/jquery-1.7.2.min.js"></script>
+    <!--            <script async src="./public/js/min/layout.min.js"></script>-->
+            </head>
+            <body>
+                <div class="navbar navbar-fixed-top">
+
+                    <div class="navbar-inner">
+                        <div class="container">
+                            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"> 
+                                <span class="icon-bar"></span> 
+                                <span class="icon-bar"></span> 
+                                <span class="icon-bar"></span> 				
+                            </a>
+
+                            <a class="brand" href="http://linc.ufpa.br" target="_blank">:: LINC :: SGP - Sistema de Gerenciamento de Projetos </a>
+                            <div class="nav-collapse">
+
+                                <ul class="nav pull-right" id="droptopo" style="display: none">
+                                <!--                                <li><a href="#"><span class="badge badge-warning">7</span></a>                            </li>
+                                <li><a href="#"><span class="badge badge-error">3</span></a></li>
+                                <li><a href="#"><span class="badge badge-info">5</span></a></li>-->
+                                    <li class="divider-vertical"></li>
+                                    </li>
+                                    <li id="users" class="dropdown">
+                                        <a data-toggle="dropdown" class="dropdown-toggle " href="#">
+                                            <span class="badge badge-error">{{countuser}} <i class="icon-user"></i>&nbsp;</span>
+                                        </a>
+                                        <ul class="dropdown-menu badge-error">
+                                            {{#usuarios}}
+                                            <li>
+                                                <a href="javascript:;" controller="index" action="usuarios" onclick="Layout.go($(this))" style="color: white">{{nome}}</a>
+                                            </li>
+                                            {{/usuarios}}
+                                        </ul>
+                                    </li><!--
+                                    <li id="docs" class="dropdown">
+                                        <a data-toggle="dropdown" class="dropdown-toggle " href="#">
+                                            <span class="badge badge-error">2 <i class="icon-tags"></i>&nbsp;</span>
+                                        </a>
+                                        <ul class="dropdown-menu">
+                                            <li>
+                                                <a href="javascript:;"><i class="icon-user"></i> -</a>
+                                            </li>
+                                        </ul>
+                                    </li>-->
+
+                                    <li class="dropdown">
+                                        <a data-toggle="dropdown" class="dropdown-toggle " href="#">
+                                            {{usuario}} <b class="caret"></b>							
+                                        </a>
+                                        <ul class="dropdown-menu">
+                                            <li>
+                                                <a href="javascript:;"><i class="icon-user"></i> Confgurações da Conta</a>
+                                            </li>
+
+                                            <li>
+                                                <a href="javascript:;"><i class="icon-lock"></i> Alterar Senha</a>
+                                            </li>
+
+                                            <li class="divider"></li>
+
+                                            <li>
+                                                <a href="./auth/logout"><i class="icon-off"></i>Sair</a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+
+                            </div> <!-- /nav-collapse -->
+
+                        </div> <!-- /container -->
+
+                    </div> <!-- /navbar-inner -->
+
+                </div> <!-- /navbar -->
+                <div id="content">
+
+                    <div class="container">
+
+                        <div class="row">
+
+                            <div class="span3">
+
+                                <div class="account-container">
+
+                                    <div class="account-avatar">
+                                        <img src="https://graph.facebook.com/{{username}}/picture" class="thumbnail" />
+                                    </div> <!-- /account-avatar -->
+
+                                    <div class="account-details">
+                                        <span class="account-name">{{usuario}}</span>
+                                        <span class="account-role">{{perfil}}</span>
+                                    </div> <!-- /account-details -->
+                                </div> <!-- /account-container -->
+                                <hr />
+
+                                <ul id="main-nav" class="nav nav-tabs nav-stacked">
+
+                                    <li>
+                                        <a href="javascript:;" class="itemmenu" controller="index" action="dashboard" onclick="Layout.go($(this))">
+                                            <i class="icon-home"></i>
+                                            Dashboard 		
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:;" class="itemmenu" controller="index" action="projeto" onclick="Layout.go($(this))" >
+                                            <i class="icon-th-list"></i>
+                                            Projetos		
+                                        </a>
+                                    </li>
+
+                                    <li>
+                                        <a href="javascript:;" class="itemmenu" controller="index" action="grupo" onclick="Layout.go($(this))" >
+                                            <i class="icon-th-list"></i>
+                                            Grupos
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:;" class="itemmenu" controller="index" action="atas" onclick="Layout.go($(this))" >
+                                            <i class="icon-th-list"></i>
+                                            Atas das Reuniões		
+                                        </a>
+                                    </li>
+<!--                                    <li>
+                                        <a href="javascript:;" class="itemmenu" controller="index" action="relatorio" onclick="Layout.go($(this))">
+                                            <i class="icon-signal"></i>
+                                            Relatórios	
+                                        </a>
+                                    </li>-->
+                                    <!--                                <li>
+                                                                        <a href="javascript:;" class="itemmenu" controller="index" action="agenda" onclick="go($(this))">
+                                                                            <i class="icon-th-large"></i>
+                                                                            Agenda	
+                                                                            <span class="label label-important pull-right">5</span>
+                                                                        </a>
+                                                                    </li>-->
+                                    <li>
+                                        <a href="javascript:;" class="itemmenu" controller="index" action="faq" onclick="Layout.go($(this))">
+                                            <i class="icon-pushpin"></i>
+                                            FAQ	
+                                        </a>
+                                    </li>
+
+                                    <li>
+                                        <a href="javascript:;" class="itemmenu" controller="index" action="usuarios" onclick="Layout.go($(this))">
+                                            <i class="icon-user"></i>
+                                            Usuários							
+                                        </a>
+                                    </li>
+
+<!--                                    <li>
+                                        <a href="javascript:;" class="btn" onclick="localStorage.clear();">LIMPAR</a>
+                                    </li>-->
+                                    <li>
+                                        <a href="./auth/logout" class="itemmenu" controller="index" action="sair" >
+                                            <i class="icon-lock"></i>
+                                            Sair
+                                        </a>
+                                    </li>
+                                </ul>	
+                                <hr />
+                                <div class="sidebar-extra">
+                                    <p align="justify">Sistema de gerenciamento de projetos do 
+                                        <em>Laboratório de Inteligência Computacional da Universidade Federal do Pará</em>. 
+                                        Dentre suas funcionalidades destacam-se a análise de dados e visualização de informações para suporte à decisão e gerencia em projetos</p>
+                                </div> <!-- .sidebar-extra -->
+                                <br />
+                            </div> <!-- /span3 -->
+                            <div class="span9">
+                                <!--[if IE 7]><p class=chromeframe style="border:1px solid red;padding-left:15px;background-color:lightgrey">Seu navegador está <em style="color:red">desatualizado!</em> <a href="http://browsehappy.com/">Utilize outro navegador</a> ou <a href="http://www.google.com/chromeframe/?redirect=true">instale o Google Chrome Frame</a> para utilziar todos os recursos deste sistema.</p><![endif]-->
+                                <div id="erroloading" class="alert alert-danger" style="display: none;">
+                                    <a class="close" onclick="$('#erroloading').hide();">×</a>
+                                </div>
+                                <div id="main">
+                                </div>
+                            </div> <!-- /span9 -->
+                        </div> <!-- /row -->
+                    </div> <!-- /container -->
+                </div> <!-- /content -->
+                <div id="footer">
+                    <div class="container">				
+                        <hr>
+                        <p>&copy; 2012  LINC - Laboratório de Inteligência Computacional <span style="float: right; font-size: 10px;">Desenvolvido por: <a href="http://jgabriellima.in" target="_blank">J. Gabriel lima</a> </span></p>
+                    </div> <!-- /container -->
+                </div> <!-- /footer -->
+                <!-- Le javascript
+                ================================================== -->
+                <script>
+                    
+                    var Layout = {
+                        $path: localStorage.getItem('lincsgp_path'),
+                        $user: localStorage.getItem('lincsgp_user'),
+                        $action: localStorage.getItem('lincsgp_action'),
+                        $templatetopo:null,
+                        $templateprofile:null,
+                        $erromsg:$("#erroloading"),
+                        $container:$("#main"),
+                        $profile:$('.account-container'),
+                        $topo:$('#droptopo'),
+                        $users_dropdown:$("#users"),
+                        $pagedefault:"./index/dashboard",
+                        $avatar:null,
+                        
+                        init:function(){
+                            try{
+                                if(Layout.$user == null){
+                                    Layout.getuserinfo();
+                                }else{
+                                    Layout.setuserinfo();
+                                }
+                                //
+                                if(Layout.$action== null){
+                                    $('#main-nav > li:first').addClass("active");
+                                }
+                                //
+                                $('.itemmenu').each(function(){
+                                    if($(this).attr("action") == Layout.$action){
+                                        $(this).parent().addClass("active");
+                                    }
+                                });
+                                //
+                                Layout.$path = (Layout.$path == null) ? Layout.$pagedefault : Layout.$path;
+                                Layout.$container.html("<p><progress></progress></p>").load(Layout.$path, 
+                                function(response, status, xhr){
+                                    if(status=="error"){
+                                        Layout.$erromsg.show("slide");
+                                        Layout.$container.html('');
+                                    }
+                                });
+                                //
+                                Layout.update();
+                            }catch(e){
+                                console.log(e);
+                            }
+                        },
+                        go:function(item){
+                            try{
+                                Layout.$erromsg.hide();
+                                $('.active').each(function(){
+                                    $(this).removeClass("active");
+                                });
+                                //removeActive();
+                                Layout.$path = './';
+                                var controller = item.attr('controller');
+                                var action = item.attr('action');
+                                var _function = item.attr('function');
+                                var param = item.attr('param');
+                                if(controller!=undefined)
+                                {
+                                    Layout.$path+=controller;
+                                }
+                                if(action!=undefined)
+                                {
+                                    Layout.$path+='/'+action;
+                                }
+                                if(_function!=undefined)
+                                {
+                                    Layout.$path+='/function/'+_function;
+                                }
+                                localStorage.setItem('lincsgp_path', Layout.$path);
+                                localStorage.setItem('lincsgp_action', action);
+                                //
+                                if( localStorage.getItem(action)==null){
+                                    Layout.$container.html("Carregando...").load(Layout.$path, function(response, status, xhr) {
+                                        localStorage.setItem(action, response);
+                                        if (status == "error") {
+                                            var msg = "Desculpe-nos, ocorreu o seguinte erro : "+ xhr.status + " - " + xhr.statusText;
+                                            Layout.$erromsg.html('<a class="close" onclick="$(\'#erroloading\').hide();">×</a>'+msg);
+                                            Layout.$erromsg.show();
+                                            Layout.$container.html('');
+                                        }
+                                    });
+                                }else{
+                                    Layout.$container.html(localStorage.getItem(action));
+                                }
+                                item.parent().addClass('active');
+                            }catch(e){
+                                console.log(e);
+                            }
+                        },
+                        logout:function(){
+    //                        localStorage.removeItem('lincsgp_path');
+    //                        localStorage.removeItem('lincsgp_user');
+    //                        localStorage.removeItem('lincsgp_user_obj');
+    //                        localStorage.removeItem('lincsgp_action');
+                            localStorage.clear();
+                            widow.location='./auth/logout';
+                        },
+                        update:function(){
+                            var update_notifys = setInterval(
+                            function()
+                            {
+                                Layout.getuserinfo();
+
+                            }, 300000);
+                        },
+                        getuserinfo:function()
+                        {
+                            try{
+                                $.getJSON('./index/userprofile',function(json){
+                                    var userjson = JSON.stringify(json);
+                                    localStorage.setItem('lincsgp_user', userjson);
+                                    Layout.setuserinfo();
+                                });
+                            }catch(e){
+                                console.log(e);
+                            }
+                        },
+                        setuserinfo:function(){
+                            try{
+                                if(Layout.$templateprofile ==null){
+                                    Layout.$templateprofile = Layout.$profile.html();
+                                    Layout.$templateprofile = Layout.$templateprofile.replace('%7B%7B',"{{");
+                                    Layout.$templateprofile = Layout.$templateprofile.replace('%7D%7D',"}}");
+                                }
+                                if(Layout.$templatetopo == null){
+                                    Layout.$templatetopo = Layout.$topo.html();
+                                }
+                                Layout.$user = localStorage.getItem('lincsgp_user');
+                                Layout.$user = JSON.parse(Layout.$user);
+                                var html = Mustache.to_html(Layout.$templateprofile, Layout.$user);
+                                Layout.$profile.html(html);
+                                Layout.$topo.html(Mustache.to_html(Layout.$templatetopo, Layout.$user));
+                        
+                                if(Layout.$user.countuser==0){
+                                    Layout.$users_dropdown.hide(); 
+                                }else{
+                                    Layout.$users_dropdown.show(); 
+                                }
+                                Layout.$topo.show();
+                            }catch(e){
+                                console.log('setuserinfo: '+e);
+                            }
+                        },
+                        load:function(path,name,type,sync,addheader){
+                            try{
+                                var tag;
+                                switch(type){
+                                    case 'style':
+                                        tag = document.createElement('style');
+                                        break;
+                                    case 'script':
+                                        tag = document.createElement('script');
+                                        break;
+                                    default:
+                                        tag = document.createElement('script');
+                                };
+                                tag.setAttribute("name",name);
+                                if(!Layout.exist(path)){
+                                    if(localStorage.getItem(name)==null){
+                                        var file = new XMLHttpRequest();
+                                        file.open("GET", path, sync);
+                                        file.onreadystatechange = function() {
+                                            if (file.readyState === 4) {  // Makes sure the document is ready to parse.
+                                                if (file.status === 200) {  // Makes sure it's found the file.
+                                                    allText = file.responseText; 
+                                                    localStorage.setItem(name,allText);
+                                                    tag.textContent = localStorage.getItem(name);
+                                                    if(addheader){
+                                                        document.head.appendChild(tag);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        file.send(null);
+                                    }else{
+                                        tag.textContent = localStorage.getItem(name);
+                                        document.head.appendChild(tag);
+                                    }
+                                }
+                            }catch(e){
+                                alert(e);
+                            }
+                        },
+                        extrairArquivo:function(Caminho){
+                            Caminho = Caminho.replace(/\\/g, "/");
+                            var Arquivo = Caminho.substring(Caminho.lastIndexOf('/') + 1);
+                            return Arquivo;
+                        },
+                        exist:function(url){
+                            var scriptExiste = false;
+                            var scripts = document.getElementsByTagName("head")[0].getElementsByTagName("script");
+                            var i;
+                            for(i = 0; i < scripts.length; i++) {
+                                var name = scripts[i].getAttribute('name');
+                                if(name==null){
+                                    name = Layout.extrairArquivo(scripts[i].src);
+                                }
+                                if(name == Layout.extrairArquivo(url)) {
+                                    scriptExiste = true;
+                                }
+                            }
+                            return scriptExiste;
+                        }
+                    };
+                   
+                    $(document).ready(function(){
+                        Layout.load("./public/js/jquery-1.7.2.min.js", "jquery-1.7.2.min.js", "script", false, false);
+                        Layout.load("./public/js/bootstrap.js", "bootstrap.js", "script", false, true);
+                        Layout.load("./public/js/mustache.js", "mustache.js", "script", false, true);
+                        Layout.load("./public/js/jasny-bootstrap.min.js", "jasny-bootstrap.min.js", "script", false, true);
+                        Layout.init();
+                    });
+                    
+                    
+                </script>
+            </body>
+        </html>
